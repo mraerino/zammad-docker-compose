@@ -100,9 +100,13 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - nginx-zammad:/etc/resty-auto-ssl/storage
 
 volumes:
   data-zammad:
     driver: local
   db-zammad:
+    driver: local
+  nginx-zammad:
     driver: local
