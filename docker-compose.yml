@@ -90,6 +90,17 @@ services:
     networks:
       - zammad
 
+  nginx:
+    depends_on:
+      - zammad-nginx
+    image: nomaster/nginx
+    restart: always
+    networks:
+      - zammad
+    ports:
+      - "80:80"
+      - "443:443"
+
 volumes:
   data-zammad:
     driver: local
