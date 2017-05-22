@@ -49,6 +49,8 @@ services:
     restart: always
     networks:
       - zammad
+    volumes:
+      - db-zammad:/var/lib/postgresql/data
 
   zammad-railsserver:
     depends_on:
@@ -90,4 +92,6 @@ services:
 
 volumes:
   data-zammad:
+    driver: local
+  db-zammad:
     driver: local
