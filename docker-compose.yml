@@ -1,5 +1,9 @@
 version: '2'
 
+networks:
+  zammad:
+    driver: bridge
+
 services:
 
   zammad:
@@ -13,12 +17,16 @@ services:
     restart: on-failure
     volumes:
       - data-zammad:/home/zammad
+    networks:
+      - zammad
 
   zammad-elasticsearch:
     image: zammad/zammad-docker-compose:zammad-elasticsearch
     labels:
       io.rancher.container.pull_image: always
     restart: always
+    networks:
+      - zammad
 
   zammad-nginx:
     depends_on:
@@ -26,20 +34,21 @@ services:
     image: zammad/zammad-docker-compose:zammad-nginx
     labels:
       io.rancher.container.pull_image: always
-    links:
-      - zammad-railsserver
-      - zammad-websocket
-    ports:
-      - "80:80"
     restart: always
     volumes:
       - data-zammad:/home/zammad
+    networks:
+      zammad:
+        aliases:
+          - app
 
   zammad-postgresql:
     image: zammad/zammad-docker-compose:zammad-postgresql
     labels:
       io.rancher.container.pull_image: always
     restart: always
+    networks:
+      - zammad
 
   zammad-railsserver:
     depends_on:
@@ -47,14 +56,13 @@ services:
     image: zammad/zammad-docker-compose:zammad-railsserver
     labels:
       io.rancher.container.pull_image: always
-    links:
-      - zammad-elasticsearch
-      - zammad-postgresql
     depends_on:
       - zammad
     restart: always
     volumes:
       - data-zammad:/home/zammad
+    networks:
+      - zammad
 
   zammad-scheduler:
     depends_on:
@@ -62,12 +70,11 @@ services:
     image: zammad/zammad-docker-compose:zammad-scheduler
     labels:
       io.rancher.container.pull_image: always
-    links:
-      - zammad-elasticsearch
-      - zammad-postgresql
     restart: always
     volumes:
       - data-zammad:/home/zammad
+    networks:
+      - zammad
 
   zammad-websocket:
     depends_on:
@@ -75,12 +82,11 @@ services:
     image: zammad/zammad-docker-compose:zammad-websocket
     labels:
       io.rancher.container.pull_image: always
-    links:
-      - zammad-postgresql
-      - zammad
     restart: always
     volumes:
       - data-zammad:/home/zammad
+    networks:
+      - zammad
 
 volumes:
   data-zammad:
