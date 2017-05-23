@@ -18,7 +18,9 @@ services:
     volumes:
       - data-zammad:/home/zammad
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - zammad
 
   zammad-elasticsearch:
     image: zammad/zammad-docker-compose:zammad-elasticsearch
@@ -26,7 +28,10 @@ services:
       io.rancher.container.pull_image: always
     restart: always
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - elasticsearch
+
 
   zammad-nginx:
     depends_on:
@@ -48,7 +53,9 @@ services:
       io.rancher.container.pull_image: always
     restart: always
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - postgresql
     volumes:
       - db-zammad:/var/lib/postgresql/data
 
@@ -64,7 +71,9 @@ services:
     volumes:
       - data-zammad:/home/zammad
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - railsserver
 
   zammad-scheduler:
     depends_on:
@@ -76,7 +85,9 @@ services:
     volumes:
       - data-zammad:/home/zammad
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - scheduler
 
   zammad-websocket:
     depends_on:
@@ -88,15 +99,19 @@ services:
     volumes:
       - data-zammad:/home/zammad
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - websocket
 
-  nginx:
+  zammad-https-nginx:
     depends_on:
       - zammad-nginx
     image: nomaster/nginx
     restart: always
     networks:
-      - zammad
+      zammad:
+        aliases:
+          - https-nginx
     ports:
       - "80:80"
       - "443:443"
