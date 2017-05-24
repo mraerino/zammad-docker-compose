@@ -118,6 +118,16 @@ services:
     volumes:
       - nginx-zammad:/etc/resty-auto-ssl/storage
 
+  smtp:
+    depends_on:
+      - zammad-postgresql
+    image: mraerino/zammad-smtp-receiver
+    restart: always
+    networks:
+      - zammad
+    ports:
+      - "25:25"
+
 volumes:
   data-zammad:
     driver: local
